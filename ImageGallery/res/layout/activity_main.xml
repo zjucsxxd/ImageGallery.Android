@@ -1,0 +1,30 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity" >
+
+    <TextView
+        android:id="@+id/gallery_editoria_indicator"
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="#e40000"
+        android:textIsSelectable="false" />
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/gallery_main_pager"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_above="@+id/gallery_bottom_pager"
+        android:layout_below="@+id/gallery_editoria_indicator" />
+
+    <Gallery
+        android:id="@+id/gallery_bottom_pager"
+        android:layout_width="fill_parent"
+        android:layout_height="70dp"
+        android:layout_alignParentBottom="true"
+        android:layout_gravity="center_vertical"
+        android:background="#00FF00"
+        android:spacing="1dip" />
+
+</RelativeLayout>
