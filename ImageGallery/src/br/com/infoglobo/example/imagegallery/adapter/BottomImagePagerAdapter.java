@@ -18,6 +18,8 @@ public class BottomImagePagerAdapter extends BaseAdapter {
 	private LayoutInflater inflater;
 	private ImageLoader imageLoader = ImageLoader.getInstance();
 	private DisplayImageOptions options;
+	
+	public int selectedPosition;
 
 	public BottomImagePagerAdapter(Context context, String[] images,
 			ImageLoader imageLoader) {
@@ -54,15 +56,13 @@ public class BottomImagePagerAdapter extends BaseAdapter {
 
 		ImageView image = (ImageView) contentView.findViewById(R.id.image);
 		ImageView shadow = (ImageView) contentView.findViewById(R.id.shadow);
-		shadow.setVisibility(View.GONE);
 
-		if (image == null) {
-			image = (ImageView) inflater.inflate(
-					R.layout.adapter_bottom_gallery_pager, parent, false);
-		}
-		
+		int visibility = (this.selectedPosition == position) ? View.GONE
+				: View.VISIBLE;
+		shadow.setVisibility(visibility);
+
 		imageLoader.displayImage(this.images[position], image, options);
-		
+
 		return contentView;
 	}
 

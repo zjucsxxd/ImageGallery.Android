@@ -11,9 +11,6 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 import br.com.infoglobo.example.imagegallery.R;
-import br.com.infoglobo.example.imagegallery.R.drawable;
-import br.com.infoglobo.example.imagegallery.R.id;
-import br.com.infoglobo.example.imagegallery.R.layout;
 
 import com.actionbarsherlock.app.SherlockFragment;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;

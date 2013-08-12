@@ -120,6 +120,8 @@ public class MainActivity extends SherlockFragmentActivity {
 
 	private boolean canScrollMainGallery = true;
 
+	private String[] imageUrls;
+
 	private static final String STATE_POSITION = "STATE_POSITION";
 
 	@Override
@@ -130,7 +132,8 @@ public class MainActivity extends SherlockFragmentActivity {
 		imageLoader.init(ImageLoaderConfiguration
 				.createDefault(getApplicationContext()));
 
-		String[] imageUrls = IMAGES;
+		imageUrls = IMAGES;
+
 		int pagerPosition = 0;
 
 		if (savedInstanceState != null) {
@@ -141,6 +144,12 @@ public class MainActivity extends SherlockFragmentActivity {
 		mainGallery.setAdapter(new MainImagePagerAdapter(this, imageUrls,
 				imageLoader, bottomGallery));
 		mainGallery.setCurrentItem(pagerPosition);
+
+		bottomGallery = (Gallery) findViewById(R.id.gallery_bottom_pager);
+		final BottomImagePagerAdapter bottomGalleryAdapter = new BottomImagePagerAdapter(
+				this, imageUrls, imageLoader);
+		bottomGallery.setAdapter(bottomGalleryAdapter);
+		
 		mainGallery.setOnPageChangeListener(new OnPageChangeListener() {
 			@Override
 			public void onPageScrollStateChanged(int arg0) {
@@ -153,20 +162,22 @@ public class MainActivity extends SherlockFragmentActivity {
 			@Override
 			public void onPageSelected(int position) {
 				if (canScrollMainGallery) {
+					bottomGalleryAdapter.selectedPosition = position;
+					bottomGalleryAdapter.notifyDataSetChanged();
 					bottomGallery.setSelection(position);
 				}
 				canScrollMainGallery = true;
 			}
 
 		});
-
-		bottomGallery = (Gallery) findViewById(R.id.gallery_bottom_pager);
-		bottomGallery.setAdapter(new BottomImagePagerAdapter(this, imageUrls,
-				imageLoader));
+		
 		bottomGallery.setOnItemClickListener(new OnItemClickListener() {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view,
 					int position, long id) {
+				
+				bottomGalleryAdapter.selectedPosition = position;
+				bottomGalleryAdapter.notifyDataSetChanged();
 				canScrollMainGallery = false;
 				mainGallery.setCurrentItem(position);
 			}
