@@ -1,4 +1,4 @@
-package br.com.infoglobo.example.imagegallery;
+package br.com.infoglobo.example.imagegallery.activities;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
@@ -6,8 +6,11 @@ import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.Gallery;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.Gallery;
+import br.com.infoglobo.example.imagegallery.R;
+import br.com.infoglobo.example.imagegallery.adapter.BottomImagePagerAdapter;
+import br.com.infoglobo.example.imagegallery.adapter.MainImagePagerAdapter;
 
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -112,8 +115,10 @@ public class MainActivity extends SherlockFragmentActivity {
 
 	private ImageLoader imageLoader = ImageLoader.getInstance();
 
-	private ViewPager firstPager;
-	private Gallery secondPager;
+	private ViewPager mainGallery;
+	private Gallery bottomGallery;
+
+	private boolean canScrollMainGallery = true;
 
 	private static final String STATE_POSITION = "STATE_POSITION";
 
@@ -132,11 +137,11 @@ public class MainActivity extends SherlockFragmentActivity {
 			pagerPosition = savedInstanceState.getInt(STATE_POSITION);
 		}
 
-		firstPager = (ViewPager) findViewById(R.id.gallery_main_pager);
-		firstPager.setAdapter(new MainImagePagerAdapter(this, imageUrls,
-				imageLoader, secondPager));
-		firstPager.setCurrentItem(pagerPosition);
-		firstPager.setOnPageChangeListener(new OnPageChangeListener() {
+		mainGallery = (ViewPager) findViewById(R.id.gallery_main_pager);
+		mainGallery.setAdapter(new MainImagePagerAdapter(this, imageUrls,
+				imageLoader, bottomGallery));
+		mainGallery.setCurrentItem(pagerPosition);
+		mainGallery.setOnPageChangeListener(new OnPageChangeListener() {
 			@Override
 			public void onPageScrollStateChanged(int arg0) {
 			}
@@ -147,19 +152,23 @@ public class MainActivity extends SherlockFragmentActivity {
 
 			@Override
 			public void onPageSelected(int position) {
-				secondPager.setSelection(position);
+				if (canScrollMainGallery) {
+					canScrollMainGallery = true;
+					bottomGallery.setSelection(position);
+				}
 			}
 
 		});
 
-		secondPager = (Gallery) findViewById(R.id.gallery_bottom_pager);
-		secondPager.setAdapter(new BottomImagePagerAdapter(this, imageUrls,
+		bottomGallery = (Gallery) findViewById(R.id.gallery_bottom_pager);
+		bottomGallery.setAdapter(new BottomImagePagerAdapter(this, imageUrls,
 				imageLoader));
-		secondPager.setOnItemClickListener(new OnItemClickListener() {
+		bottomGallery.setOnItemClickListener(new OnItemClickListener() {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view,
 					int position, long id) {
-				firstPager.setCurrentItem(position);
+				canScrollMainGallery = false;
+				mainGallery.setCurrentItem(position);
 			}
 		});
 	}

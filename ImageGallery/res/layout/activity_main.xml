@@ -16,7 +16,8 @@
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:layout_above="@+id/gallery_bottom_pager"
-        android:layout_below="@+id/gallery_editoria_indicator" />
+        android:layout_below="@+id/gallery_editoria_indicator"
+        android:background="#000000" />
 
     <Gallery
         android:id="@+id/gallery_bottom_pager"
@@ -24,7 +25,7 @@
         android:layout_height="70dp"
         android:layout_alignParentBottom="true"
         android:layout_gravity="center_vertical"
-        android:background="#00FF00"
+        android:background="#FFFFFF"
         android:spacing="1dip" />
 
 </RelativeLayout>

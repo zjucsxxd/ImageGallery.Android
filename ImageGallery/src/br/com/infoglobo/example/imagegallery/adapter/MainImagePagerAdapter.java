@@ -1,4 +1,4 @@
-package br.com.infoglobo.example.imagegallery;
+package br.com.infoglobo.example.imagegallery.adapter;
 
 import android.app.Activity;
 import android.content.Context;
@@ -13,6 +13,7 @@ import android.widget.Gallery;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
+import br.com.infoglobo.example.imagegallery.R;
 
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;

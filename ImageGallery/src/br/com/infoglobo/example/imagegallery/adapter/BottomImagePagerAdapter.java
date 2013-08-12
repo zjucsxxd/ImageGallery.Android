@@ -1,4 +1,4 @@
-package br.com.infoglobo.example.imagegallery;
+package br.com.infoglobo.example.imagegallery.adapter;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -7,18 +7,19 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
+import br.com.infoglobo.example.imagegallery.R;
 
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
-class BottomImagePagerAdapter extends BaseAdapter {
+public class BottomImagePagerAdapter extends BaseAdapter {
 
 	private String[] images;
 	private LayoutInflater inflater;
 	private ImageLoader imageLoader = ImageLoader.getInstance();
 	private DisplayImageOptions options;
 
-	BottomImagePagerAdapter(Context context, String[] images,
+	public BottomImagePagerAdapter(Context context, String[] images,
 			ImageLoader imageLoader) {
 		this.images = images;
 		this.inflater = LayoutInflater.from(context);
@@ -48,13 +49,21 @@ class BottomImagePagerAdapter extends BaseAdapter {
 
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
-		ImageView imageView = (ImageView) convertView;
-		if (imageView == null) {
-			imageView = (ImageView) inflater.inflate(
+		View contentView = inflater.inflate(
+				R.layout.adapter_bottom_gallery_pager, parent, false);
+
+		ImageView image = (ImageView) contentView.findViewById(R.id.image);
+		ImageView shadow = (ImageView) contentView.findViewById(R.id.shadow);
+		shadow.setVisibility(View.GONE);
+
+		if (image == null) {
+			image = (ImageView) inflater.inflate(
 					R.layout.adapter_bottom_gallery_pager, parent, false);
 		}
-		imageLoader.displayImage(this.images[position], imageView, options);
-		return imageView;
+		
+		imageLoader.displayImage(this.images[position], image, options);
+		
+		return contentView;
 	}
 
 }
