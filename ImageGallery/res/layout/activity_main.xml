@@ -18,6 +18,17 @@
         android:layout_below="@+id/gallery_editoria_indicator"
         android:background="#000000" />
 
+    <TextView
+        android:id="@+id/gallery_main_caption"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/gallery_bottom_pager"
+        android:background="#000000"
+        android:padding="8dp"
+        android:text="@string/legenda_da_foto"
+        android:textColor="#FFFFFF"
+        android:textIsSelectable="false" />
+
     <Gallery
         android:id="@+id/gallery_bottom_pager"
         android:layout_width="fill_parent"

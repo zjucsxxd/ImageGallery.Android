@@ -62,14 +62,14 @@ public class MainImagePagerAdapter extends PagerAdapter {
 
 	@Override
 	public Object instantiateItem(ViewGroup view, int position) {
-		View imageLayout = inflater.inflate(
+		View contentView = inflater.inflate(
 				R.layout.adapter_main_gallery_pager, view, false);
-		final ImageView imageView = (ImageView) imageLayout
+		final ImageView imageView = (ImageView) contentView
 				.findViewById(R.id.gallery_main_image);
-		final ProgressBar spinner = (ProgressBar) imageLayout
+		final ProgressBar spinner = (ProgressBar) contentView
 				.findViewById(R.id.loading);
 
-		imageView.setOnClickListener((OnClickListener) ownerActivity);
+		contentView.setOnClickListener((OnClickListener) ownerActivity);
 		
 		imageLoader.displayImage(images[position], imageView, options,
 				new SimpleImageLoadingListener() {
@@ -112,8 +112,8 @@ public class MainImagePagerAdapter extends PagerAdapter {
 					}
 				});
 
-		((ViewPager) view).addView(imageLayout, 0);
-		return imageLayout;
+		((ViewPager) view).addView(contentView, 0);
+		return contentView;
 	}
 
 	@Override

@@ -9,14 +9,15 @@ import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.animation.Animation;
-import android.view.animation.Animation.AnimationListener;
 import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Gallery;
+import android.widget.TextView;
 import br.com.infoglobo.example.imagegallery.R;
 import br.com.infoglobo.example.imagegallery.adapter.BottomImagePagerAdapter;
 import br.com.infoglobo.example.imagegallery.adapter.MainImagePagerAdapter;
+import br.com.infoglobo.example.imagegallery.helpers.VisibilityAnimationHelper;
 
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -134,6 +135,8 @@ public class MainActivity extends SherlockFragmentActivity implements
 	private static Animation fadeOut;
 	private static Animation fadeIn;
 
+	TextView imageCaption;
+
 	private static final String STATE_POSITION = "STATE_POSITION";
 
 	@Override
@@ -159,6 +162,8 @@ public class MainActivity extends SherlockFragmentActivity implements
 		if (savedInstanceState != null) {
 			pagerPosition = savedInstanceState.getInt(STATE_POSITION);
 		}
+
+		imageCaption = (TextView) findViewById(R.id.gallery_main_caption);
 
 		mainGallery = (ViewPager) findViewById(R.id.gallery_main_pager);
 
@@ -192,21 +197,6 @@ public class MainActivity extends SherlockFragmentActivity implements
 			}
 		});
 
-		// mainGallery.setOnClickListener(new OnClickListener() {
-		//
-		// @Override
-		// public void onClick(View v) {
-		// final int vis = mainGallery.getSystemUiVisibility();
-		// if ((vis & View.SYSTEM_UI_FLAG_LOW_PROFILE) != 0) {
-		// mainGallery
-		// .setSystemUiVisibility(View.SYSTEM_UI_FLAG_VISIBLE);
-		// } else {
-		// mainGallery
-		// .setSystemUiVisibility(View.SYSTEM_UI_FLAG_LOW_PROFILE);
-		// }
-		// }
-		// });
-
 		bottomGallery.setOnItemClickListener(new OnItemClickListener() {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view,
@@ -218,36 +208,6 @@ public class MainActivity extends SherlockFragmentActivity implements
 				mainGallery.setCurrentItem(position);
 			}
 		});
-
-		fadeOut.setAnimationListener(new AnimationListener() {
-			@Override
-			public void onAnimationStart(Animation animation) {
-			}
-
-			@Override
-			public void onAnimationRepeat(Animation animation) {
-			}
-
-			@Override
-			public void onAnimationEnd(Animation animation) {
-				bottomGallery.setVisibility(View.GONE);
-			}
-		});
-
-		fadeIn.setAnimationListener(new AnimationListener() {
-			@Override
-			public void onAnimationStart(Animation animation) {
-			}
-
-			@Override
-			public void onAnimationRepeat(Animation animation) {
-			}
-
-			@Override
-			public void onAnimationEnd(Animation animation) {
-				bottomGallery.setVisibility(View.VISIBLE);
-			}
-		});
 	}
 
 	@TargetApi(11)
@@ -255,12 +215,29 @@ public class MainActivity extends SherlockFragmentActivity implements
 	public void onClick(View v) {
 		final int vis = mainGallery.getSystemUiVisibility();
 
+		VisibilityAnimationHelper visibilityAnimationHelper = new VisibilityAnimationHelper();
+		visibilityAnimationHelper.setVisibilityAnimationInView(
+				getApplicationContext(), bottomGallery);
+		visibilityAnimationHelper.setVisibilityAnimationInView(
+				getApplicationContext(), imageCaption);
+
 		if ((vis & View.SYSTEM_UI_FLAG_LOW_PROFILE) != 0) {
-			bottomGallery.startAnimation(fadeIn);
+			startFadeInAnimationInView(imageCaption);
+			startFadeInAnimationInView(bottomGallery);
 			mainGallery.setSystemUiVisibility(View.SYSTEM_UI_FLAG_VISIBLE);
 		} else {
+			startFadeOutAnimationInView(imageCaption);
+			startFadeOutAnimationInView(bottomGallery);
 			bottomGallery.startAnimation(fadeOut);
 			mainGallery.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LOW_PROFILE);
 		}
+	}
+
+	public void startFadeInAnimationInView(View view) {
+		view.startAnimation(fadeIn);
+	}
+
+	public void startFadeOutAnimationInView(View view) {
+		view.startAnimation(fadeOut);
 	}
 }
