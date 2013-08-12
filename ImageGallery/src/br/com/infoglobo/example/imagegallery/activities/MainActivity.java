@@ -153,9 +153,9 @@ public class MainActivity extends SherlockFragmentActivity {
 			@Override
 			public void onPageSelected(int position) {
 				if (canScrollMainGallery) {
-					canScrollMainGallery = true;
 					bottomGallery.setSelection(position);
 				}
+				canScrollMainGallery = true;
 			}
 
 		});
