@@ -1,10 +1,16 @@
 package br.com.infoglobo.example.imagegallery.activities;
 
 import android.annotation.SuppressLint;
+import android.annotation.TargetApi;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.animation.Animation;
+import android.view.animation.Animation.AnimationListener;
+import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Gallery;
@@ -15,10 +21,13 @@ import br.com.infoglobo.example.imagegallery.adapter.MainImagePagerAdapter;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
+import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
 
+@TargetApi(Build.VERSION_CODES.HONEYCOMB)
 @SuppressWarnings("deprecation")
-@SuppressLint("SdCardPath")
-public class MainActivity extends SherlockFragmentActivity {
+@SuppressLint({ "SdCardPath", "InlinedApi" })
+public class MainActivity extends SherlockFragmentActivity implements
+		OnClickListener {
 
 	public static final String[] IMAGES = new String[] {
 			// Heavy images
@@ -122,6 +131,9 @@ public class MainActivity extends SherlockFragmentActivity {
 
 	private String[] imageUrls;
 
+	private static Animation fadeOut;
+	private static Animation fadeIn;
+
 	private static final String STATE_POSITION = "STATE_POSITION";
 
 	@Override
@@ -129,8 +141,16 @@ public class MainActivity extends SherlockFragmentActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 
-		imageLoader.init(ImageLoaderConfiguration
-				.createDefault(getApplicationContext()));
+		fadeOut = AnimationUtils.loadAnimation(this, R.anim.fade_out);
+		fadeIn = AnimationUtils.loadAnimation(this, R.anim.fade_in);
+
+		ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(
+				getApplicationContext())
+				.threadPriority(Thread.NORM_PRIORITY - 2).threadPoolSize(1)
+				.denyCacheImageMultipleSizesInMemory()
+				.tasksProcessingOrder(QueueProcessingType.FIFO).build();
+
+		imageLoader.init(config);
 
 		imageUrls = IMAGES;
 
@@ -141,15 +161,17 @@ public class MainActivity extends SherlockFragmentActivity {
 		}
 
 		mainGallery = (ViewPager) findViewById(R.id.gallery_main_pager);
-		mainGallery.setAdapter(new MainImagePagerAdapter(this, imageUrls,
-				imageLoader, bottomGallery));
+
+		final MainImagePagerAdapter mainGalleryAdapter = new MainImagePagerAdapter(
+				this, imageUrls, imageLoader);
+		mainGallery.setAdapter(mainGalleryAdapter);
 		mainGallery.setCurrentItem(pagerPosition);
 
 		bottomGallery = (Gallery) findViewById(R.id.gallery_bottom_pager);
 		final BottomImagePagerAdapter bottomGalleryAdapter = new BottomImagePagerAdapter(
 				this, imageUrls, imageLoader);
 		bottomGallery.setAdapter(bottomGalleryAdapter);
-		
+
 		mainGallery.setOnPageChangeListener(new OnPageChangeListener() {
 			@Override
 			public void onPageScrollStateChanged(int arg0) {
@@ -168,19 +190,77 @@ public class MainActivity extends SherlockFragmentActivity {
 				}
 				canScrollMainGallery = true;
 			}
-
 		});
-		
+
+		// mainGallery.setOnClickListener(new OnClickListener() {
+		//
+		// @Override
+		// public void onClick(View v) {
+		// final int vis = mainGallery.getSystemUiVisibility();
+		// if ((vis & View.SYSTEM_UI_FLAG_LOW_PROFILE) != 0) {
+		// mainGallery
+		// .setSystemUiVisibility(View.SYSTEM_UI_FLAG_VISIBLE);
+		// } else {
+		// mainGallery
+		// .setSystemUiVisibility(View.SYSTEM_UI_FLAG_LOW_PROFILE);
+		// }
+		// }
+		// });
+
 		bottomGallery.setOnItemClickListener(new OnItemClickListener() {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view,
 					int position, long id) {
-				
+
 				bottomGalleryAdapter.selectedPosition = position;
 				bottomGalleryAdapter.notifyDataSetChanged();
 				canScrollMainGallery = false;
 				mainGallery.setCurrentItem(position);
 			}
 		});
+
+		fadeOut.setAnimationListener(new AnimationListener() {
+			@Override
+			public void onAnimationStart(Animation animation) {
+			}
+
+			@Override
+			public void onAnimationRepeat(Animation animation) {
+			}
+
+			@Override
+			public void onAnimationEnd(Animation animation) {
+				bottomGallery.setVisibility(View.GONE);
+			}
+		});
+
+		fadeIn.setAnimationListener(new AnimationListener() {
+			@Override
+			public void onAnimationStart(Animation animation) {
+			}
+
+			@Override
+			public void onAnimationRepeat(Animation animation) {
+			}
+
+			@Override
+			public void onAnimationEnd(Animation animation) {
+				bottomGallery.setVisibility(View.VISIBLE);
+			}
+		});
+	}
+
+	@TargetApi(11)
+	@Override
+	public void onClick(View v) {
+		final int vis = mainGallery.getSystemUiVisibility();
+
+		if ((vis & View.SYSTEM_UI_FLAG_LOW_PROFILE) != 0) {
+			bottomGallery.startAnimation(fadeIn);
+			mainGallery.setSystemUiVisibility(View.SYSTEM_UI_FLAG_VISIBLE);
+		} else {
+			bottomGallery.startAnimation(fadeOut);
+			mainGallery.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LOW_PROFILE);
+		}
 	}
 }

@@ -8,8 +8,8 @@ import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.widget.Gallery;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
@@ -22,7 +22,6 @@ import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 import com.nostra13.universalimageloader.core.assist.SimpleImageLoadingListener;
 import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
 
-@SuppressWarnings("deprecation")
 public class MainImagePagerAdapter extends PagerAdapter {
 
 	private String[] images;
@@ -32,7 +31,7 @@ public class MainImagePagerAdapter extends PagerAdapter {
 	private Activity ownerActivity;
 
 	public MainImagePagerAdapter(Context context, String[] images,
-			ImageLoader imageLoader, Gallery secondPager) {
+			ImageLoader imageLoader) {
 		this.images = images;
 		this.inflater = LayoutInflater.from(context);
 		this.imageLoader = imageLoader;
@@ -42,7 +41,7 @@ public class MainImagePagerAdapter extends PagerAdapter {
 				.showImageForEmptyUri(R.drawable.ic_empty)
 				.showImageOnFail(R.drawable.ic_error)
 				.resetViewBeforeLoading(true).cacheOnDisc(true)
-				.imageScaleType(ImageScaleType.EXACTLY)
+				.imageScaleType(ImageScaleType.EXACTLY_STRETCHED)
 				.bitmapConfig(Bitmap.Config.RGB_565)
 				.displayer(new FadeInBitmapDisplayer(300)).build();
 	}
@@ -65,11 +64,13 @@ public class MainImagePagerAdapter extends PagerAdapter {
 	public Object instantiateItem(ViewGroup view, int position) {
 		View imageLayout = inflater.inflate(
 				R.layout.adapter_main_gallery_pager, view, false);
-		ImageView imageView = (ImageView) imageLayout
+		final ImageView imageView = (ImageView) imageLayout
 				.findViewById(R.id.gallery_main_image);
 		final ProgressBar spinner = (ProgressBar) imageLayout
 				.findViewById(R.id.loading);
 
+		imageView.setOnClickListener((OnClickListener) ownerActivity);
+		
 		imageLoader.displayImage(images[position], imageView, options,
 				new SimpleImageLoadingListener() {
 					@Override
@@ -131,5 +132,5 @@ public class MainImagePagerAdapter extends PagerAdapter {
 
 	@Override
 	public void startUpdate(View container) {
-	}
+	}	
 }
