@@ -20,7 +20,6 @@
         android:layout_gravity="center"
         android:adjustViewBounds="true"
         android:background="#C8FFFFFF"
-        android:contentDescription="@string/hello_world"
-        android:visibility="visible" />
+        android:contentDescription="@string/hello_world" />
 
 </RelativeLayout>
