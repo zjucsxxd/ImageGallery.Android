@@ -148,8 +148,6 @@ public class MainActivity extends SherlockFragmentActivity implements
 		
 		visibilityAnimationHelper = new VisibilityAnimationHelper();
 		
-		getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN);
-		
 		fadeOut = AnimationUtils.loadAnimation(this, R.anim.fade_out);
 		fadeIn = AnimationUtils.loadAnimation(this, R.anim.fade_in);
 
@@ -177,6 +175,7 @@ public class MainActivity extends SherlockFragmentActivity implements
 				this, imageUrls, imageLoader);
 		mainGallery.setAdapter(mainGalleryAdapter);
 		mainGallery.setCurrentItem(pagerPosition);
+		imageCaption.setText("Legenda foto " + pagerPosition);
 
 		bottomGallery = (Gallery) findViewById(R.id.gallery_bottom_pager);
 		final BottomImagePagerAdapter bottomGalleryAdapter = new BottomImagePagerAdapter(
@@ -194,6 +193,7 @@ public class MainActivity extends SherlockFragmentActivity implements
 
 			@Override
 			public void onPageSelected(int position) {
+				imageCaption.setText("Legenda foto " + position);
 				if (canScrollMainGallery) {
 					bottomGalleryAdapter.selectedPosition = position;
 					bottomGalleryAdapter.notifyDataSetChanged();
@@ -224,17 +224,12 @@ public class MainActivity extends SherlockFragmentActivity implements
 			imageCaption.setVisibility(View.GONE);
 			bottomGallery.setVisibility(View.GONE);
 			getSupportActionBar().hide();
-//			startFadeOutAnimationInView(imageCaption);
-//			startFadeOutAnimationInView(bottomGallery);
-//			bottomGallery.startAnimation(fadeOut);
-			mainGallery.setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN);
+//			getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN);
 		} else {
 			getSupportActionBar().show();
 			imageCaption.setVisibility(View.VISIBLE);
 			bottomGallery.setVisibility(View.VISIBLE);
-//			startFadeInAnimationInView(imageCaption);
-//			startFadeInAnimationInView(bottomGallery);
-			mainGallery.setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN);
+//			getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN);
 		}
 	}
 
