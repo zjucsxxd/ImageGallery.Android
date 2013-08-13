@@ -24,7 +24,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_above="@+id/gallery_bottom_pager"
-        android:background="#000000"
+        android:background="#CC1A1A1A"
         android:padding="8dp"
         android:text="@string/legenda_da_foto"
         android:textColor="#FFFFFF"
@@ -36,7 +36,7 @@
         android:layout_height="70dp"
         android:layout_alignParentBottom="true"
         android:layout_gravity="center_vertical"
-        android:background="#000000"
+        android:background="#FFFFFF"
         android:paddingBottom="1dp"
         android:paddingTop="1dp"
         android:spacing="1dp" />

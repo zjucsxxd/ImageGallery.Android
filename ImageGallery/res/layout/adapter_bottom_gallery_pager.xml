@@ -19,7 +19,7 @@
         android:layout_height="120dip"
         android:layout_gravity="center"
         android:adjustViewBounds="true"
-        android:background="#C8FFFFFF"
+        android:background="#4DFFFFFF"
         android:contentDescription="@string/hello_world" />
 
 </RelativeLayout>
