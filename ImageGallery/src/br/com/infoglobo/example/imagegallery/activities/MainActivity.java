@@ -136,6 +136,8 @@ public class MainActivity extends SherlockFragmentActivity implements
 	private static Animation fadeIn;
 
 	TextView imageCaption;
+	
+	VisibilityAnimationHelper visibilityAnimationHelper;
 
 	private static final String STATE_POSITION = "STATE_POSITION";
 
@@ -143,7 +145,11 @@ public class MainActivity extends SherlockFragmentActivity implements
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-
+		
+		visibilityAnimationHelper = new VisibilityAnimationHelper();
+		
+		getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN);
+		
 		fadeOut = AnimationUtils.loadAnimation(this, R.anim.fade_out);
 		fadeIn = AnimationUtils.loadAnimation(this, R.anim.fade_in);
 
@@ -213,23 +219,22 @@ public class MainActivity extends SherlockFragmentActivity implements
 	@TargetApi(11)
 	@Override
 	public void onClick(View v) {
-		final int vis = mainGallery.getSystemUiVisibility();
 
-		VisibilityAnimationHelper visibilityAnimationHelper = new VisibilityAnimationHelper();
-		visibilityAnimationHelper.setVisibilityAnimationInView(
-				getApplicationContext(), bottomGallery);
-		visibilityAnimationHelper.setVisibilityAnimationInView(
-				getApplicationContext(), imageCaption);
-
-		if ((vis & View.SYSTEM_UI_FLAG_LOW_PROFILE) != 0) {
-			startFadeInAnimationInView(imageCaption);
-			startFadeInAnimationInView(bottomGallery);
-			mainGallery.setSystemUiVisibility(View.SYSTEM_UI_FLAG_VISIBLE);
+		if (bottomGallery.isShown()) {
+			imageCaption.setVisibility(View.GONE);
+			bottomGallery.setVisibility(View.GONE);
+			getSupportActionBar().hide();
+//			startFadeOutAnimationInView(imageCaption);
+//			startFadeOutAnimationInView(bottomGallery);
+//			bottomGallery.startAnimation(fadeOut);
+			mainGallery.setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN);
 		} else {
-			startFadeOutAnimationInView(imageCaption);
-			startFadeOutAnimationInView(bottomGallery);
-			bottomGallery.startAnimation(fadeOut);
-			mainGallery.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LOW_PROFILE);
+			getSupportActionBar().show();
+			imageCaption.setVisibility(View.VISIBLE);
+			bottomGallery.setVisibility(View.VISIBLE);
+//			startFadeInAnimationInView(imageCaption);
+//			startFadeInAnimationInView(bottomGallery);
+			mainGallery.setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN);
 		}
 	}
 

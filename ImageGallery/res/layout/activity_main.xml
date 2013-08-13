@@ -2,6 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#000000"
     tools:context=".MainActivity" >
 
     <TextView
@@ -35,7 +36,9 @@
         android:layout_height="70dp"
         android:layout_alignParentBottom="true"
         android:layout_gravity="center_vertical"
-        android:background="#FFFFFF"
-        android:spacing="1dip" />
+        android:background="#000000"
+        android:paddingBottom="1dp"
+        android:paddingTop="1dp"
+        android:spacing="1dp" />
 
 </RelativeLayout>
