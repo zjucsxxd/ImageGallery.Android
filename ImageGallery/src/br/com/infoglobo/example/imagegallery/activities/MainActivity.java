@@ -8,6 +8,7 @@ import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.Window;
 import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -18,6 +19,7 @@ import android.widget.TextView;
 import br.com.infoglobo.example.imagegallery.R;
 import br.com.infoglobo.example.imagegallery.adapter.BottomImagePagerAdapter;
 import br.com.infoglobo.example.imagegallery.adapter.MainImagePagerAdapter;
+import br.com.infoglobo.example.imagegallery.helpers.VersionHelper;
 import br.com.infoglobo.example.imagegallery.helpers.VisibilityAnimationHelper;
 
 import com.actionbarsherlock.app.ActionBar;
@@ -34,6 +36,7 @@ public class MainActivity extends SherlockFragmentActivity implements
 
 	public static final String[] IMAGES = new String[] {
 			// Heavy images
+			"http://extra.globo.com/incoming/9575378-7ab-aa0/w976h550/claudialeitte.jpg",
 			"https://lh6.googleusercontent.com/-jZgveEqb6pg/T3R4kXScycI/AAAAAAAAAE0/xQ7CvpfXDzc/s1024/sample_image_01.jpg",
 			"https://lh4.googleusercontent.com/-K2FMuOozxU0/T3R4lRAiBTI/AAAAAAAAAE8/a3Eh9JvnnzI/s1024/sample_image_02.jpg",
 			"https://lh5.googleusercontent.com/-SCS5C646rxM/T3R4l7QB6xI/AAAAAAAAAFE/xLcuVv3CUyA/s1024/sample_image_03.jpg",
@@ -138,7 +141,7 @@ public class MainActivity extends SherlockFragmentActivity implements
 	private static Animation overlayIn;
 
 	TextView imageCaption;
-	
+
 	ActionBar actionBar;
 
 	VisibilityAnimationHelper visibilityAnimationHelper;
@@ -147,14 +150,15 @@ public class MainActivity extends SherlockFragmentActivity implements
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
+
+		if (VersionHelper.hasHoneycomb())
+			getWindow().requestFeature(Window.FEATURE_ACTION_BAR_OVERLAY);
+
+		getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+				WindowManager.LayoutParams.FLAG_FULLSCREEN);
+
 		super.onCreate(savedInstanceState);
-		
-//		getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN);
-//		getWindow().requestFeature(Window.FEATURE_ACTION_BAR_OVERLAY);
-		
-		// Hide status bar Android 2x above
-		getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-		
+
 		setContentView(R.layout.activity_main);
 
 		actionBar = getSupportActionBar();
@@ -163,7 +167,7 @@ public class MainActivity extends SherlockFragmentActivity implements
 		actionBar.setDisplayHomeAsUpEnabled(true);
 		actionBar.setDisplayUseLogoEnabled(true);
 		actionBar.setDisplayShowTitleEnabled(false);
-		
+
 		visibilityAnimationHelper = new VisibilityAnimationHelper();
 
 		overlayOut = AnimationUtils.loadAnimation(this, R.anim.overlay_out);
@@ -232,42 +236,49 @@ public class MainActivity extends SherlockFragmentActivity implements
 				mainGallery.setCurrentItem(position);
 			}
 		});
-		
-		// Hide and show the ActionBar as the visibility changes
-//        mainGallery.setOnSystemUiVisibilityChangeListener(
-//                new View.OnSystemUiVisibilityChangeListener() {
-//                    @Override
-//                    public void onSystemUiVisibilityChange(int vis) {
-//                        if ((vis & View.SYSTEM_UI_FLAG_LOW_PROFILE) != 0) {
-//                            actionBar.hide();
-//                        } else {
-//                            actionBar.show();
-//                        }
-//                    }
-//                });
 
-        // Start low profile mode and hide ActionBar
-//        mainGallery.setSystemUiVisibility(View.SYSTEM_UI_FLAG_VISIBLE);
-		
+		// Hide and show the ActionBar as the visibility changes
+		// mainGallery.setOnSystemUiVisibilityChangeListener(
+		// new View.OnSystemUiVisibilityChangeListener() {
+		// @Override
+		// public void onSystemUiVisibilityChange(int vis) {
+		// if ((vis & View.SYSTEM_UI_FLAG_LOW_PROFILE) != 0) {
+		// actionBar.hide();
+		// } else {
+		// actionBar.show();
+		// }
+		// }
+		// });
+
+		// Start low profile mode and hide ActionBar
+		// mainGallery.setSystemUiVisibility(View.SYSTEM_UI_FLAG_VISIBLE);
+
 	}
 
 	@Override
 	public void onClick(View v) {
 
-        if (actionBar.isShowing()) {
-        	// Just work Android 3x and above
-//        	mainGallery.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LOW_PROFILE);
-        	getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        	imageCaption.setVisibility(View.GONE);
-        	bottomGallery.setVisibility(View.GONE);
-        	actionBar.hide();
-        } else {
-        	// Just work Android 3x and above
-//        	mainGallery.setSystemUiVisibility(View.SYSTEM_UI_FLAG_VISIBLE);
-        	imageCaption.setVisibility(View.VISIBLE);
-        	bottomGallery.setVisibility(View.VISIBLE);
-        	actionBar.show();
-        }
+		if (actionBar.isShowing()) {
+			// Just work Android 3x and above
+			if (VersionHelper.hasHoneycomb()) {
+				mainGallery
+						.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LOW_PROFILE);
+			} else {
+				getWindow().setFlags(
+						WindowManager.LayoutParams.FLAG_FULLSCREEN,
+						WindowManager.LayoutParams.FLAG_FULLSCREEN);
+			}
+			imageCaption.setVisibility(View.GONE);
+			bottomGallery.setVisibility(View.GONE);
+			actionBar.hide();
+		} else {
+			// Just work Android 3x and above
+			if (VersionHelper.hasHoneycomb())
+				mainGallery.setSystemUiVisibility(View.SYSTEM_UI_FLAG_VISIBLE);
+			imageCaption.setVisibility(View.VISIBLE);
+			bottomGallery.setVisibility(View.VISIBLE);
+			actionBar.show();
+		}
 	}
 
 	public void startFadeInAnimationInView(View view) {
